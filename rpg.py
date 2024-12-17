@@ -80,63 +80,53 @@ class Monster:
 class Game:
     def __init__(self):
         self.player = None
+        self.boss_defeated = False
         self.map_size = (30, 30)
         self.position = (29, 0)
-        self.locations = {
-            (29, 0): "You are at the edge of the forest, ready to explore.",
-            (28, 0): "You are at the edge of the forest, ready to explore.",
-            (27, 0): "You are at the edge of the forest, ready to explore.",
-            (26, 0): "You are at the edge of the forest, ready to explore.",
-            (29, 1): "You are at the edge of the forest, ready to explore.",
-            (28, 1): "You are at the edge of the forest, ready to explore.",
-            (27, 1): "You are at the edge of the forest, ready to explore.",
-            (26, 1): "You are at the edge of the forest, ready to explore.",
-            (20, 5): "A small clearing appears between the trees.",
-            (19, 5): "A small clearing appears between the trees.",
-            (18, 5): "A small clearing appears between the trees.",
-            (17, 5): "A small clearing appears between the trees.",
-            (20, 6): "A small clearing appears between the trees.",
-            (19, 6): "A small clearing appears between the trees.",
-            (18, 6): "A small clearing appears between the trees.",
-            (17, 6): "A small clearing appears between the trees.",
-            (10, 10): "The trees here are very dense, it’s dark.",
-            (9, 10): "The trees here are very dense, it’s dark.",
-            (8, 10): "The trees here are very dense, it’s dark.",
-            (7, 10): "The trees here are very dense, it’s dark.",
-            (10, 11): "The trees here are very dense, it’s dark.",
-            (9, 11): "The trees here are very dense, it’s dark.",
-            (8, 11): "The trees here are very dense, it’s dark.",
-            (7, 11): "The trees here are very dense, it’s dark.",
-            (5, 20): "A mysterious grove where the air feels strange and heavy.",
-            (4, 20): "A mysterious grove where the air feels strange and heavy.",
-            (3, 20): "A mysterious grove where the air feels strange and heavy.",
-            (2, 20): "A mysterious grove where the air feels strange and heavy.",
-            (5, 21): "A mysterious grove where the air feels strange and heavy.",
-            (4, 21): "A mysterious grove where the air feels strange and heavy.",
-            (3, 21): "A mysterious grove where the air feels strange and heavy.",
-            (2, 21): "A mysterious grove where the air feels strange and heavy.",
-            (0, 29): "A threatening place... The boss awaits you here.",
-            (1, 29): "You are very close to the final boss... Be ready.",
-            (2, 29): "You are very close to the final boss... The air feels tense.",
-            (3, 29): "You are very close to the final boss... It's almost time.",
-            (0, 28): "You are very close to the final boss... The ground shakes.",
-            (1, 28): "You are very close to the final boss... Prepare for battle.",
-            (2, 28): "You are very close to the final boss... You feel its presence.",
-            (3, 28): "You are very close to the final boss... The forest feels darker.",
-            (15, 15): "A quiet part of the forest, the sounds of wildlife surround you.",
-            (14, 15): "A quiet part of the forest, the sounds of wildlife surround you.",
-            (13, 15): "A quiet part of the forest, the sounds of wildlife surround you.",
-            (12, 15): "A quiet part of the forest, the sounds of wildlife surround you.",
-            (25, 10): "The path becomes overgrown here, hard to find your way.",
-            (24, 10): "The path becomes overgrown here, hard to find your way.",
-            (23, 10): "The path becomes overgrown here, hard to find your way.",
-            (22, 10): "The path becomes overgrown here, hard to find your way.",
-            (10, 25): "You are in a quiet, unclear part of the forest.",
-            (10, 24): "You are in a quiet, unclear part of the forest.",
-            (9, 24): "You are in a quiet, unclear part of the forest.",
-            (9, 25): "You are in a quiet, unclear part of the forest.",
+        self.locations = {}
+        self.default_description = "This part of the forest is quiet and unremarkable."
+        self.zones = {
+            "edge_forest": {
+                "description": "You are at the edge of the forest, ready to explore.",
+                "coordinates": [(26, 0), (29, 1)],
+            },
+            "small_clearing": {
+                "description": "A small clearing appears between the trees.",
+                "coordinates": [(17, 5), (20, 6)],
+            },
+            "dense_forest": {
+                "description": "The trees here are very dense, it’s dark.",
+                "coordinates": [(7, 10), (10, 11)],
+            },
+            "mysterious_grove": {
+                "description": "A mysterious grove where the air feels strange and heavy.",
+                "coordinates": [(2, 20), (5, 21)],
+            },
+            "final_boss": {
+                "description": "A threatening place... The boss awaits you here.",
+                "coordinates": [(0, 28), (3, 29)],
+            },
+            "quiet_forest": {
+                "description": "A quiet part of the forest, the sounds of wildlife surround you.",
+                "coordinates": [(12, 15), (15, 15)],
+            },
+            "overgrown_path": {
+                "description": "The path becomes overgrown here, hard to find your way.",
+                "coordinates": [(22, 10), (25, 10)],
+            },
+            "unclear_forest": {
+                "description": "You are in a quiet, unclear part of the forest.",
+                "coordinates": [(9, 24), (10, 25)],
+            },
         }
-        self.boss_defeated = False
+        for x in range(30):
+            for y in range(30):
+                self.locations[(x, y)] = self.default_description
+                for zone in self.zones.values():
+                    x_min, y_min = zone["coordinates"][0]
+                    x_max, y_max = zone["coordinates"][1]
+                    if x_min <= x <= x_max and y_min <= y <= y_max:
+                        self.locations[(x, y)] = zone["description"]
 
     def main_menu(self):
         print("Welcome to the RPG Game!")
@@ -169,7 +159,9 @@ class Game:
                 break
             print(f"\nCurrent Location: {self.position}")
             print(self.locations[self.position])
+            print("======================================================================")
             print("Commands: Go North, Go South, Go East, Go West, Inventory, Stats, Quit")
+            print("======================================================================")
             command = input("> ").lower()
             if command.startswith("go"):
                 self.move(command.split()[1])
@@ -237,12 +229,14 @@ class Game:
         while self.player.is_alive() and monster.is_alive():
             print(f"\nYour HP: {self.player.hp}/{self.player.max_hp}")
             print(f"{monster.name} HP: {monster.hp}")
+            print("======================================================================")
             print("Choose action: Attack, Inventory, Run")
+            print("======================================================================")
             action = input("> ").lower()
             if action == "attack":
                 self.attack(monster)
             elif action == "inventory":
-                self.use_item(monster)
+                self.show_inventory()
             elif action == "run":
                 print("You run away!")
                 return
@@ -284,14 +278,17 @@ class Game:
             print("Inventory:")
             for i, item in enumerate(self.player.inventory, 1):
                 print(f"{i}. {item}")
+            print("======================================================================")
             print("Select an item to use or equip:")
+            print("======================================================================")
             use_item = input("> ").lower()
             if use_item.isdigit() and 1 <= int(use_item) <= len(self.player.inventory):
-                self.use_item(int(use_item) - 1)
+                item_index = int(use_item) - 1
+                self.use_item(item_index)
             else:
                 print("Invalid selection.")
 
-    def use_item(self, item_index, monster=None):
+    def use_item(self, item_index=None):
         item = self.player.inventory[item_index]
         if item == 'Potion':
             self.player.heal(50)
