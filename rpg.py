@@ -82,7 +82,7 @@ class Game:
         self.player = None
         self.boss_defeated = False
         self.map_size = (30, 30)
-        self.position = (29, 0)
+        self.position = (0, 0)
         self.locations = {}
         self.default_description = "This part of the forest is quiet and unremarkable."
         self.zones = {
@@ -119,8 +119,8 @@ class Game:
                 "coordinates": [(9, 24), (10, 25)],
             },
         }
-        for x in range(30):
-            for y in range(30):
+        for x in range(31):
+            for y in range(31):
                 self.locations[(x, y)] = self.default_description
                 for zone in self.zones.values():
                     x_min, y_min = zone["coordinates"][0]
@@ -146,6 +146,7 @@ class Game:
         name = input("> ")
         self.player = Character(name)
         print(f"Welcome, {self.player.name}! You awaken in a mysterious forest with only a knife.")
+        print("Your position is 0:0, the boss is in the opposite side of the forest.")
         self.player.equip_weapon('Knife')
         self.game_loop()
 
@@ -177,11 +178,11 @@ class Game:
 
     def move(self, direction):
         x, y = self.position
-        if direction == 'north' and x > 0:
-            x -= 1
-        elif direction == 'south' and x < self.map_size[0] - 1:
+        if direction == 'north' and x < self.map_size[1]:
             x += 1
-        elif direction == 'east' and y < self.map_size[1] - 1:
+        elif direction == 'south' and x > 0:
+            x -= 1
+        elif direction == 'east' and y < self.map_size[0]:
             y += 1
         elif direction == 'west' and y > 0:
             y -= 1
@@ -196,7 +197,7 @@ class Game:
     def location_event(self):
         if self.position in self.locations:
             print(self.locations[self.position])
-            if self.position == (0, 29):
+            if self.position == (30, 30):
                 self.combat_boss()
             else:
                 self.random_event()
@@ -220,7 +221,7 @@ class Game:
             print("Nothing happens...")
 
     def combat(self):
-        if self.position == 'Boss Lair':
+        if self.position == (30, 30):
             monster = Monster("Boss", level=10)
         else:
             monster = Monster("Monster", level=random.randint(1, self.player.level + 1))
