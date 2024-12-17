@@ -86,37 +86,57 @@ class Game:
         self.locations = {}
         self.default_description = "This part of the forest is quiet and unremarkable."
         self.zones = {
+            "spawn_area": {
+                "description": "You are in the spawn area, ready to begin your adventure.",
+                "coordinates": [(0, 0), (3, 3)],  # Spawn area in bottom-left
+            },
             "edge_forest": {
                 "description": "You are at the edge of the forest, ready to explore.",
-                "coordinates": [(26, 0), (29, 1)],
+                "coordinates": [(4, 0), (7, 5)],  # Adjusted coordinates
             },
             "small_clearing": {
                 "description": "A small clearing appears between the trees.",
-                "coordinates": [(17, 5), (20, 6)],
+                "coordinates": [(8, 6), (12, 9)],  # Adjusted coordinates
             },
             "dense_forest": {
                 "description": "The trees here are very dense, it’s dark.",
-                "coordinates": [(7, 10), (10, 11)],
+                "coordinates": [(13, 10), (16, 12)],  # Adjusted coordinates
             },
             "mysterious_grove": {
                 "description": "A mysterious grove where the air feels strange and heavy.",
-                "coordinates": [(2, 20), (5, 21)],
-            },
-            "final_boss": {
-                "description": "A threatening place... The boss awaits you here.",
-                "coordinates": [(0, 28), (3, 29)],
+                "coordinates": [(17, 14), (20, 17)],  # Adjusted coordinates
             },
             "quiet_forest": {
                 "description": "A quiet part of the forest, the sounds of wildlife surround you.",
-                "coordinates": [(12, 15), (15, 15)],
+                "coordinates": [(21, 18), (24, 21)],  # Adjusted coordinates
             },
             "overgrown_path": {
                 "description": "The path becomes overgrown here, hard to find your way.",
-                "coordinates": [(22, 10), (25, 10)],
+                "coordinates": [(22, 22), (25, 25)],  # Adjusted coordinates
             },
             "unclear_forest": {
                 "description": "You are in a quiet, unclear part of the forest.",
-                "coordinates": [(9, 24), (10, 25)],
+                "coordinates": [(15, 24), (17, 28)],  # Adjusted coordinates
+            },
+            "final_boss": {
+                "description": "A threatening place... The boss awaits you here.",
+                "coordinates": [(27, 28), (30, 30)],  # Boss area at top-right (30,30)
+            },
+            "new_area_1": {
+                "description": "A serene and peaceful meadow, full of colorful flowers.",
+                "coordinates": [(5, 5), (8, 8)],  # New area
+            },
+            "new_area_2": {
+                "description": "A rocky hill with a panoramic view of the entire forest.",
+                "coordinates": [(12, 13), (15, 15)],  # New area
+            },
+            "new_area_3": {
+                "description": "A dark cave hidden in the forest, the air feels cold and damp.",
+                "coordinates": [(18, 20), (21, 22)],  # New area
+            },
+            "new_area_4": {
+                "description": "A crystal-clear lake surrounded by trees, a peaceful sight.",
+                "coordinates": [(22, 6), (25, 9)],  # New area
             },
         }
         for x in range(31):
